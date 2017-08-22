@@ -1,0 +1,38 @@
+# 回推的時間 年為單位
+b_time <- 3.5
+
+
+val <- 1503331200
+
+as.numeric(2017-08-22)
+julian(2017-08-22)
+ as.numeric(as.POSIXct(2017-08-22))
+ 
+as.POSIXct(val, origin="1970-01-01")
+as.Date(as.POSIXct(val, origin="1970-01-01"))
+
+code <- '2412.TW'
+domain <- 'https://query1.finance.yahoo.com/v7/finance/download/'
+url1 <- paste(code,'?',sep = '')
+url2 <- paste('period1=',as.POSIXct(val, origin=Sys.Date()-365*3),sep = '')
+
+
+https://query1.finance.yahoo.com/v7/finance/download/2891.TW?period1=1345564800&period2=1503331200&interval=1d&events=history&crumb=kXCJqvV0IG4
+
+
+
+Sys.Date()-365*3
+
+
+
+a<-as.Date('2017-08-22')
+b<-as.Date('1970-01-01')
+val <-17400
+as.POSIXlt(17400)
+julian(a, origin = as.POSIXct("1970-01-01"))
+strptime(a, "%m/%d/%Y")$yday+1
+val <- as.character((a-b)*86400)
+
+
+
+
