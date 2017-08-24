@@ -25,3 +25,4 @@ print(p)
 }
 a<-as.list(stock_code)
 
+https://goodinfo.tw/StockInfo/StockList.asp?MARKET_CAT=%E5%85%A8%E9%83%A8&STOCK_CODE=00
