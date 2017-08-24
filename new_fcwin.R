@@ -1,6 +1,5 @@
 library(car) 
 library(rvest)
-library(quantmod)
 
 # 時間轉換格式變更 讓"Aug 22, 2017"可以判斷"2017-08-22"
 lct <- Sys.getlocale("LC_TIME")
