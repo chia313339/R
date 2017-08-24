@@ -1,62 +1,27 @@
+library(rvest)
 
+page<-c("00","01","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","64","65","66","68","74","80","81","82","83","84","89","91","98","99")
 
+catch_code <- function(page){
+# 抓取代碼連結
+link <- paste0('https://goodinfo.tw/StockInfo/StockList.asp?MARKET_CAT=全部&STOCK_CODE=',page)
+# 抓取HTML內容
+url <- read_html(link, encoding = 'UTF-8')
+# 抓取股票代碼內容 
+code<-url %>% html_nodes('a.link_black') %>% html_text()
+code<-code[(max(which(as.vector(code) == '  '))+1):length(code)]
+# 將股票代碼及中文整理成矩陣 並去除不要的欄位資訊
+code2<- as.data.frame(matrix(code, nrow = length(code), ncol = 2, byrow = TRUE))
+ind <- which(with( code2, V1=="代號"  ))
+code2<-code2[-ind, ]
+code2
+}
 
-
-https://finance.yahoo.com/quote/2891.TW/history?period1=1471795200&period2=1503331200&interval=1d&filter=history&frequency=1d
-
-
-b<-1503331200/86400
-c<-1345564800/86400
-a<-as.Date('1970-01-01')
-
-p<-as.Date('2017-08-22')
-
-date<-'2017-08-22'
-
-1503273600
-
-a<-'2017/8/19'
-
-
-# 實作
-# 讀取網頁
-url <- read_html('http://news.cnyes.com/news/cat/headline', encoding = 'UTF-8')
-
-# 取得列表 class="rtddt" 下的 a 連結
-rtddt <- url %>% html_nodes('._2bF a')
-rtddt
-
-link   <- rtddt %>% html_attr('href')
-
-# 建立連結
-domain <- 'http://news.cnyes.com'
-link   <-  paste(domain, link, sep = '')
-detail <- read_html(link[1])
-
-
-https://query1.finance.yahoo.com/v7/finance/download/APPL?period1=1500733074&period2=1503411474&interval=1d&events=history&crumb=Zx.U1TMwcl/
-
-
-
-library(RCurl)
-x <- getURL("https://query1.finance.yahoo.com/v7/finance/download/2891.TW?period1=1392984000&period2=1503360000&interval=1d&events=history&crumb=Zx.U1TMwcl/")
-
-out <- read.csv(textConnection(x))
-
-download.file("https://query1.finance.yahoo.com/v7/finance/download/2891.TW?period1=1392984000&period2=1503360000&interval=1d&events=history&crumb=Zx.U1TMwcl/",destfile="reviews.csv",method="libcurl")
-
-
-url = "https://query1.finance.yahoo.com/v7/finance/download/2891.TW?period1=1392984000&period2=1503360000&interval=1d&events=history&crumb=Zx.U1TMwcl/"
-x = read.csv(file=url)
-
-
-
-
-download.file(url, "test.txt")
-
-
-
-
-
-
+stock_code<- data.frame()
+for(p in page){
+code_tmp<-catch_code(p)
+stock_code<-rbind(stock_code, code_tmp)
+print(p)
+}
+a<-as.list(stock_code)
 
