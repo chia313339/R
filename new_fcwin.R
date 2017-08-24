@@ -2,11 +2,11 @@ library(car)
 library(rvest)
 library(quantmod)
 
-# ®É¶¡Âà´«®æ¦¡ÅÜ§ó Åı"Aug 22, 2017"¥i¥H§PÂ_"2017-08-22"
+# æ™‚é–“è½‰æ›æ ¼å¼è®Šæ›´ è®“"Aug 22, 2017"å¯ä»¥åˆ¤æ–·"2017-08-22"
 lct <- Sys.getlocale("LC_TIME")
 Sys.setlocale("LC_TIME", "C")
 
-# ¿é¤JªÑ»ù §PÂ_¥Ø«e»ù®æ°ª§C
+# è¼¸å…¥è‚¡åƒ¹ åˆ¤æ–·ç›®å‰åƒ¹æ ¼é«˜ä½
 dec <- function(clo,ss1,ss2,ss3,ss4){
   if(clo<ss1)return("exLow")
   else if(clo>ss1 & clo<ss2) return("Low")
@@ -15,61 +15,56 @@ dec <- function(clo,ss1,ss2,ss3,ss4){
   else return("Normally")
 }
 
-#«Ø¥ß¨ç¼Æ ²¾°£ÃöÁä¦r
+#å»ºç«‹å‡½æ•¸ ç§»é™¤é—œéµå­—
 removekey <-function(s, keys){
   s.split=strsplit(s, keys)
   s =as.character(s.split)
   s
 }
 
-backtime<-3.5
-code<-2891
 
-# ª¦ºô¨ç¼Æ ¿é¤J¤@­Ó¥N½X ¥i¥H§ì¨ú¸Ó¾ú¥vªÑ»ùcsvÀÉ
+# çˆ¬ç¶²å‡½æ•¸ è¼¸å…¥ä¸€å€‹ä»£ç¢¼ å¯ä»¥æŠ“å–è©²æ­·å²è‚¡åƒ¹csvæª”
 catch_his <- function(code, backtime=3.5){
   stock_df <- data.frame()
   for(row in c(0,200,400,600,800)){
     s_df <- data.frame() 
-    # §ì¨úªÑ²¼³sµ²
+    # æŠ“å–è‚¡ç¥¨é€£çµ
     link <- paste0('https://www.google.com/finance/historical?q=TPE%3A',code,'&startdate=',Sys.Date()-365*backtime,'&enddate=',Sys.Date(),'&num=200&start=',row)
-    # §ì¨úHTML¤º®e
+    # æŠ“å–HTMLå…§å®¹
     url <- read_html(link, encoding = 'UTF-8')
-    # §ì¨ú¤é´ÁÄæ¦ì¤º®e ¥h°£'\n' Âà¤Æ¼Ğ·Ç¤é´Á®æ¦¡
+    # æŠ“å–æ—¥æœŸæ¬„ä½å…§å®¹ å»é™¤'\n' è½‰åŒ–æ¨™æº–æ—¥æœŸæ ¼å¼
     s_date <- url %>% html_nodes('tr') %>% html_nodes('.lm') %>% html_text()
     s_date <- removekey(s_date,'\n')
-    # ²Ä¤@­Ó¤¸¯À¬°'DATE' ¦]¦¹±q²Ä¤G­Ó¶}©l§ì
+    # ç¬¬ä¸€å€‹å…ƒç´ ç‚º'DATE' å› æ­¤å¾ç¬¬äºŒå€‹é–‹å§‹æŠ“
     s_date <- as.Date(s_date[2:length(s_date)] , format = "%B %d, %Y")
     s_date <- as.data.frame(s_date)
-    # §ì¨ú»ù®æÄæ¦ì¤º®e ¥h°£'\n' 
+    # æŠ“å–åƒ¹æ ¼æ¬„ä½å…§å®¹ å»é™¤'\n' 
     s_price <- url %>% html_nodes('tr') %>% html_nodes('.rgt') %>% html_text()
     s_price <- removekey(s_price,'\n')
-    # «e¤­­Ó¤¸¯À¬°¼ĞÃD ¦]¦¹±q²Ä¤»­Ó¶}©l§ì
+    # å‰äº”å€‹å…ƒç´ ç‚ºæ¨™é¡Œ å› æ­¤å¾ç¬¬å…­å€‹é–‹å§‹æŠ“
     s_price_m <- as.data.frame(matrix(s_price[6:length(s_price)], nrow = length(s_price)/5-1, ncol = 5, byrow = TRUE))
     s_df<- cbind(s_date, s_price_m)
-    # ³Ì«á¾ã¦X¤@­Ó dataframe
+    # æœ€å¾Œæ•´åˆä¸€å€‹ dataframe
     stock_df<-rbind(stock_df, s_df)
   }
   stock_df
 }
 
-# ¿é¤JªÑ²¼¥N½X ²£¥X¾ú¥vªÑ»ù ¤Î¼Ò«¬¹Bºâ
+# è¼¸å…¥è‚¡ç¥¨ä»£ç¢¼ ç”¢å‡ºæ­·å²è‚¡åƒ¹ åŠæ¨¡å‹é‹ç®—
 stock<-function(code,backtime=3.5,pro1=95.44,pro2=68.26){
   s1<-(1-pro1/100)/2
   s2<-(1-pro2/100)/2
   s3<-1-s2
   s4<-1-s1
-  st<-getSymbols(code,auto.assign=FALSE,from=Sys.Date()-365*backtime)
-  
-  
-  st<-getSymbols('AAPL', auto.assign = F,from=Sys.Date()-365*backtime)
-  
-  newdata <- st[order(st[1], cyl),]
-  newdata <- st[order(-st[,1]),] 
-  newdata<-data[order(-data[,2]),]
-  
-  
-  
-  data<-data.frame(num=seq(1,nrow(st),1),date<-row.names(as.matrix(st)),st)
+  # æŠ“å–è‚¡åƒ¹è³‡æ–™
+  st<-catch_his(code)
+  # å»ºç«‹åºåˆ— ä¸¦ä¾ç…§æ™‚é–“æ’åº
+  data<-cbind(num=nrow(st):1,st)
+  data<-data[order(data[,1]),]
+  # factorè½‰æ›æˆæ•¸å­— ä»¥åˆ©å»ºæ¨¡
+  data[,1]<-as.numeric(as.character(data[,1]))
+  data[,6]<-as.numeric(as.character(data[,6]))
+  # å»ºç«‹å›è¦æ¨¡å‹
   m<-lm(data[,6]~num,data)
   mm<-data$num*m$coefficients[2]+m$coefficients[1]
   ss1<-qnorm(s1,mm,summary(m)$s)
@@ -77,51 +72,21 @@ stock<-function(code,backtime=3.5,pro1=95.44,pro2=68.26){
   ss3<-qnorm(s3,mm,summary(m)$s)
   ss4<-qnorm(s4,mm,summary(m)$s)
   data<-data.frame(data,mm,ss1,ss2,ss3,ss4)
-  write.table(data[,2:13],paste0("C:/Users/CHIA/Google ¶³ºİµwºĞ/STOCK/summary/",code,".txt"),col.names=T,row.names=F)#¤£­nrow
+  # å„²å­˜æ­·å²å¤å‡è³‡æ–™
+  write.table(data[,2:12],paste0("C:/STOCK/summary/",code,".txt"),col.names=T,row.names=F)
+  # æŠ“å–æœ€æ–°ä¸€ç­†è³‡æ–™
   Close<-tail(data,1)[6]
+  # åˆ¤æ–·ç›®å‰è‚¡åƒ¹æ‰€åœ¨é«˜ä½
   Price<-dec(tail(data,1)[6],tail(data,1)[10],tail(data,1)[11],tail(data,1)[12],tail(data,1)[13])
+  # è¨ˆç®—æ¨¡å‹è§£é‡‹ç‡
   Rsquared<-summary(m)$r.squared
+  # è¨ˆç®—æ–œç‡
   Slope<-m$coefficients[2]
+  # è¨ˆç®—æ¨™æº–å·®
   Sd<-summary(m)$s
   frame<-data.frame(Close,Price,Rsquared,Slope,Sd)
   return(frame)
 }
 
 save(dec,stock, file = "D:/R/STOCK/fcwin.RData")     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
