@@ -41,7 +41,7 @@ catch_his <- function(code, backtime=3.5){
     s_price <- url %>% html_nodes('tr') %>% html_nodes('.rgt') %>% html_text()
     s_price <- removekey(s_price,'\n')
     # 前五個元素為標題 因此從第六個開始抓
-    s_price_m <- as.data.frame(matrix(s_price[6:length(s_price)], nrow = length(s_price)/5-1, ncol = 5, byrow = TRUE))
+    s_price_m <- as.data.frame(matrix(s_price[6:length(s_price)], nrow = ((length(s_price)/5)-1), ncol = 5, byrow = TRUE))
     s_df<- cbind(s_date, s_price_m)
     # 最後整合一個 dataframe
     stock_df<-rbind(stock_df, s_df)
@@ -72,11 +72,11 @@ stock<-function(code,backtime=3.5,pro1=95.44,pro2=68.26){
   ss4<-qnorm(s4,mm,summary(m)$s)
   data<-data.frame(data,mm,ss1,ss2,ss3,ss4)
   # 儲存歷史古假資料
-  write.table(data[,2:12],paste0("C:/R/STOCK/summary/",code,".txt"),col.names=T,row.names=F)
+  write.table(data[,2:12],paste0("C:/GOOGLE/STOCK/summary/",code,".txt"),col.names=T,row.names=F)
   # 抓取最新一筆資料
   Close<-tail(data,1)[6]
   # 判斷目前股價所在高低
-  Price<-dec(tail(data,1)[6],tail(data,1)[10],tail(data,1)[11],tail(data,1)[12],tail(data,1)[13])
+  Price<-dec(tail(data,1)[6],tail(data,1)[9],tail(data,1)[10],tail(data,1)[11],tail(data,1)[12])
   # 計算模型解釋率
   Rsquared<-summary(m)$r.squared
   # 計算斜率
@@ -84,10 +84,10 @@ stock<-function(code,backtime=3.5,pro1=95.44,pro2=68.26){
   # 計算標準差
   Sd<-summary(m)$s
   frame<-data.frame(Close,Price,Rsquared,Slope,Sd)
-  return(frame)
+  frame
 }
 
 
 
-save.image("D:\\R\\STOCK\\fcwin.RData")    
+save.image("C:/GOOGLE/STOCK/fcwin.RData")    
  
