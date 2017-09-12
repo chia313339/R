@@ -36,3 +36,16 @@ val <- as.character((a-b)*86400)
 
 
 http://www.google.com.hk/finance/historical?cid=687950&startdate=Aug+20%2C+2017&enddate=2017-08-23&num=180
+
+
+
+
+
+
+
+https://shiny.rstudio.com/gallery/
+
+http://shiny.rstudio.com/gallery/widget-gallery.html
+runExample("01_hello")
+runApp(“資料夾名稱”) 
+
